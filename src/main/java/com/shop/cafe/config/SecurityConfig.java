@@ -10,20 +10,26 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig{
+public class SecurityConfig {
 
+    // 비밀번호 인코더 정의
     @Bean
     public PasswordEncoder passwordEncoder() {
-    	return new BCryptPasswordEncoder();
-    	
- 
-    	}
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http)throws Exception {
-    	http
-    			.csrf().disable();
-    	
-    	return http.build();
+        return new BCryptPasswordEncoder();
     }
-    
+
+    // SecurityFilterChain 정의
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .headers()
+                .addHeaderWriter((request, response) -> response.setHeader("X-Content-Type-Options", "nosniff")) // X-Content-Type-Options 헤더 추가
+            .and()
+            .authorizeRequests()
+                .requestMatchers("/**").permitAll() // 모든 요청을 허용
+            .and()
+            .csrf().disable(); // CSRF 보호를 비활성화
+
+        return http.build();
+    }
 }

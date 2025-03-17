@@ -2,10 +2,11 @@ package com.shop.cafe.dto;
 
 public class User {
 	private int id;
-	private String email, password,createdAt;
-	public User(int id, String email, String password, String createdAt) {
+	private String name, email, password,createdAt;
+	public User(int id, String name, String email, String password, String createdAt) {
 		super();
 		this.id = id;
+		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.createdAt = createdAt;
@@ -19,6 +20,12 @@ public class User {
 	}
 	public void setId(int id) {
 		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	public String getEmail() {
 		return email;
@@ -40,7 +47,8 @@ public class User {
 	}
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", email=" + email + ", password=" + password + ", createdAt=" + createdAt + "]";
+		return "User [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", createdAt="
+				+ createdAt + "]";
 	}
 	
 	
