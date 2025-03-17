@@ -2,8 +2,12 @@ package com.shop.cafe.controller;
 
 import com.shop.cafe.dto.Login;
 import com.shop.cafe.dto.User;
+import com.shop.cafe.dto.Wallet;
 import com.shop.cafe.service.MemberService;
+import com.shop.cafe.service.WalletService;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +21,22 @@ public class UserController {
 
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private WalletService walletService;
 
     // 사용자 등록 (회원가입)
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody User user) {
+        
+    	// 계좌 생성
+        try {
+			walletService.createWallet(new Wallet(user.getEmail()));
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Fail to create wallet");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("fail");
+	    }
+        
         memberService.registerUser(user);
         return ResponseEntity.ok("User registered successfully!");
     }
