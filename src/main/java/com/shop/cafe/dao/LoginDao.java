@@ -14,4 +14,6 @@ public interface LoginDao {
     // 로그아웃 시 토큰 삭제
     
     public void deleteToken(String token) throws Exception;
-    }
+    
+    public String getEmailBy(String token) throws Exception;
+}

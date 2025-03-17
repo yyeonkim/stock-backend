@@ -1,5 +1,6 @@
 package com.shop.cafe.service;
 
+import com.shop.cafe.dao.LoginDao;
 import com.shop.cafe.dao.WalletDao;
 import com.shop.cafe.dto.Wallet;
 import com.shop.cafe.dto.WalletTransaction;
@@ -12,12 +13,15 @@ public class WalletService {
 
 	@Autowired
 	WalletDao walletDao;
+	@Autowired
+	LoginDao loginDao;
 	
 	public void createWallet(Wallet w) throws Exception {
 		walletDao.createWallet(w);
 	};
 	
-    public Wallet getWallet(String email) throws Exception {
+    public Wallet getWallet(String token) throws Exception {
+    	String email = loginDao.getEmailBy(token);
     	return walletDao.getWallet(email);
     }
     
