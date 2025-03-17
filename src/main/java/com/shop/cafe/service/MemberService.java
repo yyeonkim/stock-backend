@@ -36,6 +36,9 @@ public class MemberService {
         user = userMapper.getUserByEmail(user.getEmail());
 
         if (user != null) {
+        	// [TODO] 비밀번호를 대조하고 유효한 사용자인지 확인
+        	String encodedPwd = user.getPassword();
+        	
             String name = user.getName();  // 실제 이름을 가져옵니다.
             if (name != null && !name.trim().equals("")) {
                 String email = user.getEmail();
@@ -57,6 +60,7 @@ public class MemberService {
                 return loginInfo;  // 로그인 정보 반환
             }
         }
+        // 존재하지 않는 유저이면
         return null;
     }
 

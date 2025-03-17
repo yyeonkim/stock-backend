@@ -29,6 +29,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> loginUser(@RequestBody User user) {
         Map<String, String> response = new HashMap<>();
+        
         try {
             Login loginInfo = memberService.tokenLogin(user);  // tokenLogin 메서드 호출
 

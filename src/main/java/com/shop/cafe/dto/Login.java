@@ -4,17 +4,13 @@ public class Login {
 	private String name, email, token,createdAt;
 
 	public Login(String name, String email, String token, String createdAt) {
-		super();
 		this.name = name;
 		this.email = email;
 		this.token = token;
 		this.createdAt = createdAt;
 	}
 
-	public Login() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	public Login() {}
 
 	public String getName() {
 		return name;
