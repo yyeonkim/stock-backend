@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.cafe.dao.LoginDao">
+
+    <!-- 로그인 테이블에 토큰을 저장하는 SQL -->
+    <insert id="insertToken" parameterType="Login">
+        INSERT INTO login (email, token, createdAt) VALUES (#{email}, #{token}, NOW())
+    </insert>
+
+    <!-- 토큰을 삭제하는 SQL -->
+    <delete id="deleteToken" parameterType="string">
+       DELETE FROM login WHERE token = #{token}
+    </delete>
+    
+    <select id="getEmailBy" parameterType="String" resultType="String">
+        SELECT * FROM login WHERE token = #{token};
+    </select>
+</mapper>
