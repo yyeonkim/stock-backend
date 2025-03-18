@@ -1,6 +1,7 @@
 package com.shop.cafe.service;
 
 import com.shop.cafe.dao.LoginDao;
+import com.shop.cafe.dao.UserMapper;
 import com.shop.cafe.dao.WalletDao;
 import com.shop.cafe.dto.Wallet;
 import com.shop.cafe.dto.WalletTransaction;
@@ -15,6 +16,8 @@ public class WalletService {
 	WalletDao walletDao;
 	@Autowired
 	LoginDao loginDao;
+	@Autowired
+	UserMapper userMapper;
 	
 	public void createWallet(Wallet w) throws Exception {
 		walletDao.createWallet(w);

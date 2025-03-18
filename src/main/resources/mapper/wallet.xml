@@ -9,7 +9,10 @@
     </insert>
 
     <select id="getWallet" parameterType="String" resultType="Wallet" >
-       SELECT * FROM wallet WHERE email = #{email}
+       SELECT m.name AS username, w.account, w.balance
+       FROM wallet w
+       JOIN member m ON w.email = m.email 
+       WHERE w.email = #{email}
     </select>
     
     <update id="updateWallet" parameterType="WalletTransaction" >
