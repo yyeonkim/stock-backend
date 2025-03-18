@@ -11,4 +11,5 @@ public interface WalletDao {
     public void createWallet(Wallet w) throws Exception;
     public Wallet getWallet(String email) throws Exception;
     public void updateWallet(WalletTransaction wt) throws Exception;
+	public String getEmailBy(String account);
 }
