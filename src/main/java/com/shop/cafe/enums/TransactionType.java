@@ -1,5 +1,6 @@
 package com.shop.cafe.enums;
 
+
 public enum TransactionType {
 	WITHDRAWAL("출금"),
 	DEPOSIT("입금");
