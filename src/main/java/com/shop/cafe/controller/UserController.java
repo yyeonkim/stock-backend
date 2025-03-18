@@ -65,15 +65,22 @@ public class UserController {
     }
 
 
-    // 로그아웃
     @PostMapping("/logout")
-	public void logout(@RequestHeader String authorization) {
-		System.out.println(authorization);
-		try {
-			memberService.logout(authorization);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    public ResponseEntity<String> logout(@RequestHeader String authorization) {
+        try {
+            // authorization 헤더에서 토큰 추출 (Bearer <token> 형식)
+            if (authorization != null && authorization.startsWith("Bearer ")) {
+                String token = authorization.substring(7);  // 'Bearer ' 제거
+
+                // 로그아웃 서비스 호출
+                memberService.logout(token);
+
+                return ResponseEntity.ok("로그아웃 성공");
+            } else {
+                return ResponseEntity.status(400).body("잘못된 토큰 형식");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("로그아웃 처리 중 오류 발생: " + e.getMessage());
+        }
+    }
 }

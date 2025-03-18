@@ -29,6 +29,18 @@ public class MemberService {
         user.setPassword(encodedPassword);
         userMapper.insertUser(user);
     }
+ // 로그인 시 비밀번호 검증 및 사용자 정보 반환
+    public User authenticateUser(String email, String password) {
+        try {
+            User user = userMapper.getUserByEmail(email);
+            if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+                return user; // 로그인 성공 시 사용자 정보 반환 (이름 포함)
+            }
+            return null; // 로그인 실패
+        } catch (Exception e) {
+            throw new RuntimeException("로그인 중 오류 발생", e);
+        }
+    }
 
     // 로그인 검증 및 토큰 생성
     public Login tokenLogin(User user) throws Exception {
@@ -69,11 +81,17 @@ public class MemberService {
         return userMapper.getUserByEmail(email);
     }
 
-    // 로그아웃
-    public void logout(String authorization) throws Exception {
-		loginDao.deleteToken(authorization);
+ // 로그아웃 
+    public void logout(String token) throws Exception {
+  
+        try {
+            loginDao.deleteToken(token);
+        } catch (Exception e) {
+            throw new Exception("로그아웃 처리 중 오류 발생: " + e.getMessage());
+        }
+    }
 		
 	}
 
     
-}
+
