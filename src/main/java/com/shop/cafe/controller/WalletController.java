@@ -1,6 +1,7 @@
 package com.shop.cafe.controller;
 
 import com.shop.cafe.dto.Wallet;
+import com.shop.cafe.dto.WalletTransaction;
 import com.shop.cafe.service.WalletService;
 
 import java.util.HashMap;
@@ -38,6 +39,15 @@ public class WalletController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+    }
+    
+    @PostMapping("") 
+    public void updateWallet(@RequestBody WalletTransaction wt) {
+    	try {
+			walletService.updateWallet(wt);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
     }
    

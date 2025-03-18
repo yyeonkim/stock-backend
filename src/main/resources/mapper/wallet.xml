@@ -18,19 +18,19 @@
     <update id="updateWallet" parameterType="WalletTransaction" >
        <choose>
      	 <!-- 입금 -->	
-	     <when test="type == com.shop.cafe.enums.TransactionType.DEPOSIT">
+	     <when test="type.name() == 'DEPOSIT'">
 	       UPDATE wallet
 	       SET balance = balance + #{amount}
 	       WHERE account = #{account}
 	     </when>
 	     
 	     <!-- 출금 -->
-	     <when test="type == com.shop.cafe.enums.TransactionType.WITHDRAW">
+	     <when test="type.name() == 'WITHDRAWAL'">
 	       UPDATE wallet
 	       SET balance = balance - #{amount}
 	       WHERE account = #{account}
 	       AND balance >= #{amount} <!-- 잔액이 충분한지 체크 -->
 	     </when>
-    </choose>
+    	</choose>
     </update>
 </mapper>
