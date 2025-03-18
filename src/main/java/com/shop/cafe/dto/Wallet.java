@@ -3,16 +3,10 @@ package com.shop.cafe.dto;
 import com.shop.cafe.util.RandomStringNumberGenerator;
 
 public class Wallet {
-	private String account, email;
+	private String account, email, username;
 	private int balance;
 	
 	public Wallet() {}
-	
-	public Wallet(String account, String email, int balance) {
-		setAccount(account);
-		setEmail(email);
-		setBalance(balance);
-	}
 	
 	public Wallet(String email) {
 		// 계좌 번호 자동 생성
@@ -43,4 +37,13 @@ public class Wallet {
 	public void setBalance(int balance) {
 		this.balance = balance;
 	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
 }

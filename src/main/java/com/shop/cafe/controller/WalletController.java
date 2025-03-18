@@ -25,6 +25,7 @@ public class WalletController {
     	
     	try {
 			Wallet w = walletService.getWallet(authorization);
+			response.put("username", w.getUsername());
 			response.put("account", w.getAccount());
 			response.put("balance", w.getBalance());
 			
