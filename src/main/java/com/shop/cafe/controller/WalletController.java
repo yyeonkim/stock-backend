@@ -21,6 +21,8 @@ public class WalletController {
 
     @GetMapping("")
     public ResponseEntity<?> getWallet(@RequestHeader("Authorization") String authorization)  {
+    	if (authorization.equals("")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    	
     	Map<String, Object> response = new HashMap<>();
     	
     	try {
