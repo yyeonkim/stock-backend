@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("http://127.0.0.1:5500/")
+@CrossOrigin("http://127.0.0.1:5500")
 @RequestMapping("/api/wallet")
 public class WalletController {
 
@@ -46,9 +46,12 @@ public class WalletController {
     public ResponseEntity<?> updateWallet(@RequestHeader("Authorization") String authorization, @RequestBody WalletTransaction wt) {
     	if (authorization.equals("")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     	
+    	Map<String, Object> response = new HashMap<>();
+    	
     	try {
-			walletService.updateWallet(authorization, wt);
-			return ResponseEntity.status(HttpStatus.OK).build();
+			int balance = walletService.updateWallet(authorization, wt);
+			response.put("balance", balance);
+			return ResponseEntity.status(HttpStatus.OK).body(response);
 		} catch (IllegalAccessException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		} catch (Exception e) {
