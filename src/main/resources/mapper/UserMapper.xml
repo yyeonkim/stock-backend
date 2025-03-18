@@ -11,4 +11,6 @@
     <select id="getUserByEmail" parameterType="String" resultType="com.shop.cafe.dto.User">
         SELECT * FROM member WHERE email = #{email};
     </select>
+    
+    
 </mapper>
