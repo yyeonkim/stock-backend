@@ -81,14 +81,10 @@ public class MemberService {
         return userMapper.getUserByEmail(email);
     }
 
- // 로그아웃 
+ // 로그아웃 처리
     public void logout(String token) throws Exception {
-  
-        try {
-            loginDao.deleteToken(token);
-        } catch (Exception e) {
-            throw new Exception("로그아웃 처리 중 오류 발생: " + e.getMessage());
-        }
+        // DB에서 토큰 삭제
+        loginDao.deleteToken(token);
     }
 		
 	}

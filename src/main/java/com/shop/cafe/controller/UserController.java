@@ -65,22 +65,17 @@ public class UserController {
     }
 
 
+ // 로그아웃 처리
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader String authorization) {
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorization) {
+       System.out.println(authorization);
+        String token = authorization.replace("Bearer ", "");
+       
         try {
-            // authorization 헤더에서 토큰 추출 (Bearer <token> 형식)
-            if (authorization != null && authorization.startsWith("Bearer ")) {
-                String token = authorization.substring(7);  // 'Bearer ' 제거
-
-                // 로그아웃 서비스 호출
-                memberService.logout(token);
-
-                return ResponseEntity.ok("로그아웃 성공");
-            } else {
-                return ResponseEntity.status(400).body("잘못된 토큰 형식");
-            }
+            memberService.logout(token); // DB에서 토큰 삭제
+            return ResponseEntity.ok("로그아웃 되었습니다.");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("로그아웃 처리 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("로그아웃에 실패했습니다.");
         }
     }
 }
