@@ -43,11 +43,17 @@ public class WalletController {
     }
     
     @PostMapping("") 
-    public void updateWallet(@RequestBody WalletTransaction wt) {
+    public ResponseEntity<?> updateWallet(@RequestHeader("Authorization") String authorization, @RequestBody WalletTransaction wt) {
+    	if (authorization.equals("")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    	
     	try {
-			walletService.updateWallet(wt);
+			walletService.updateWallet(authorization, wt);
+			return ResponseEntity.status(HttpStatus.OK).build();
+		} catch (IllegalAccessException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
     }
    
