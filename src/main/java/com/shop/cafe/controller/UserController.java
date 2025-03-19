@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@CrossOrigin("http://127.0.0.1:5500/")
+@CrossOrigin({"http://127.0.0.1:5500", "http://localhost:5500"})
 @RequestMapping("/api/users")
 public class UserController {
 
@@ -67,12 +67,9 @@ public class UserController {
 
  // 로그아웃 처리
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorization) {
-       System.out.println(authorization);
-        String token = authorization.replace("Bearer ", "");
-       
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorization) {       
         try {
-            memberService.logout(token); // DB에서 토큰 삭제
+            memberService.logout(authorization); // DB에서 토큰 삭제
             return ResponseEntity.ok("로그아웃 되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("로그아웃에 실패했습니다.");
