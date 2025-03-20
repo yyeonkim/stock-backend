@@ -30,7 +30,8 @@ public class MemberService {
         user.setPassword(encodedPassword);
         userMapper.insertUser(user);
     }
- // 로그인 시 비밀번호 검증 및 사용자 정보 반환
+    
+    // 로그인 시 비밀번호 검증 및 사용자 정보 반환
     public User authenticateUser(String email, String password) {
         try {
             User user = userMapper.getUserByEmail(email);
@@ -48,10 +49,7 @@ public class MemberService {
         // 이메일로 사용자 정보 조회
         user = userMapper.getUserByEmail(user.getEmail());
 
-        if (user != null) {
-        	// [TODO] 비밀번호를 대조하고 유효한 사용자인지 확인
-        	String encodedPwd = user.getPassword();
-        	
+        if (user != null) {        	
             String name = user.getName();  // 실제 이름을 가져옵니다.
             if (name != null && !name.trim().equals("")) {
                 String email = user.getEmail();
@@ -80,8 +78,12 @@ public class MemberService {
         return null;
     }
     //토큰 유효기간 검증
-    public boolean validateToken(String token, String email) throws Exception {
-        // DB에서 토큰 정보 조회
+    public boolean validateToken(String token) throws Exception {
+    	 // 토큰에서 이메일 추출 
+        String email = loginDao.getEmailBy(token);
+    	
+    	
+    	// DB에서 토큰 정보 조회
         Login loginInfo = loginDao.getTokenByEmail(email);
 
         if (loginInfo == null) {
@@ -119,13 +121,13 @@ public class MemberService {
         return userMapper.getUserByEmail(email);
     }
 
- // 로그아웃 처리
+    // 로그아웃 처리
     public void logout(String token) throws Exception {
         // DB에서 토큰 삭제
         loginDao.deleteToken(token);
     }
 		
-	}
+}
 
     
 

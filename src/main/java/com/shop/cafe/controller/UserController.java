@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@CrossOrigin("http://127.0.0.1:5500/")
+@CrossOrigin({"http://127.0.0.1:5500", "http://localhost:5500"})
 @RequestMapping("/api/users")
 public class UserController {
 
@@ -40,45 +40,36 @@ public class UserController {
         memberService.registerUser(user);
         return ResponseEntity.ok("User registered successfully!");
     }
-
- // 로그인 (토큰 생성 및 반환)
+    //로그인 처리
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> loginUser(@RequestBody User user) {
         Map<String, String> response = new HashMap<>();
 
         try {
-            // 로그인 시 비밀번호 검증 및 사용자 정보 반환
+            //사용자의 이메일과 비밀번호를 검증
             User authenticatedUser = memberService.authenticateUser(user.getEmail(), user.getPassword());
 
             if (authenticatedUser != null) {
-                // 로그인 후 토큰 생성
+                //비밀번호 검증 후 토큰 생성
                 Login loginInfo = memberService.tokenLogin(authenticatedUser);
 
                 if (loginInfo != null && loginInfo.getToken() != null) {
-                    // 클라이언트에게 전달할 정보 (토큰과 사용자 이름 등)
-                    response.put("name", authenticatedUser.getName());
-                    response.put("token", loginInfo.getToken());
-
-                    // 로그인 후 받은 토큰이 유효한지 validateToken으로 확인
-                    boolean isValid = memberService.validateToken(loginInfo.getToken(), user.getEmail());
-                    if (!isValid) {
-                        response.put("msg", "Invalid token");
-                        return ResponseEntity.status(401).body(response);  // 유효하지 않은 토큰
-                    }
-
-                    return ResponseEntity.ok(response); // 유효한 토큰인 경우
+                    // 사용자 정보 및 토큰 반환
+                    response.put("name", authenticatedUser.getName()); // 사용자 이름 반환
+                    response.put("token", loginInfo.getToken()); // 생성된 토큰 반환
+                    return ResponseEntity.ok(response);
                 } else {
                     response.put("msg", "Token generation failed");
-                    return ResponseEntity.status(500).body(response);  // 토큰 생성 실패
+                    return ResponseEntity.status(500).body(response);
                 }
             } else {
                 response.put("msg", "Invalid email or password");
-                return ResponseEntity.status(401).body(response);  // 로그인 실패
+                return ResponseEntity.status(401).body(response);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.put("msg", "Login error occurred");
-            return ResponseEntity.status(500).body(response);  // 오류 발생 시
+            response.put("msg", "Login error occurred: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
         }
     }
 
@@ -86,12 +77,9 @@ public class UserController {
 
  // 로그아웃 처리
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorization) {
-       System.out.println(authorization);
-        String token = authorization.replace("Bearer ", "");
-       
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorization) {       
         try {
-            memberService.logout(token); // DB에서 토큰 삭제
+            memberService.logout(authorization); // DB에서 토큰 삭제
             return ResponseEntity.ok("로그아웃 되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("로그아웃에 실패했습니다.");

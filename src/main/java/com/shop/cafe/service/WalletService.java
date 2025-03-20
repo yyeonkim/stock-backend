@@ -28,7 +28,15 @@ public class WalletService {
     	return walletDao.getWallet(email);
     }
     
-    public void updateWallet(WalletTransaction wt) throws Exception {
-    	walletDao.updateWallet(wt);
+    public int updateWallet(String token, WalletTransaction wt) throws Exception {
+    	String email1 = loginDao.getEmailBy(token);
+    	String email2 = walletDao.getEmailBy(wt.getAccount());
+    	
+    	if (email1.equals(email2)) {
+    		walletDao.updateWallet(wt);
+    		Wallet w = walletDao.getWallet(email1);
+    		return w.getBalance();
+    	}
+    	else throw new IllegalAccessException("Unauthorized wallet transaction.");
     }
 }

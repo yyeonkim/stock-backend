@@ -1,9 +1,10 @@
 package com.shop.cafe.enums;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum TransactionType {
-	WITHDRAWAL("출금"),
-	DEPOSIT("입금");
+	@JsonProperty WITHDRAWAL("출금"),
+	@JsonProperty DEPOSIT("입금");
 	
 	private String type;
 

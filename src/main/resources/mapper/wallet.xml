@@ -33,4 +33,8 @@
 	     </when>
     	</choose>
     </update>
+    
+    <select id="getEmailBy" parameterType="String" resultType="String" >
+       SELECT email FROM wallet WHERE account = #{account}
+    </select>
 </mapper>

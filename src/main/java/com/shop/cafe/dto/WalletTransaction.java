@@ -32,4 +32,10 @@ public class WalletTransaction {
 	public void setType(TransactionType type) {
 		this.type = type;
 	}
+	
+	@Override
+	public String toString() {
+		return "WalletTransaction [account=" + account + ", amount=" + amount + ", type=" + type + "]";
+	}
+	
 }

@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("http://127.0.0.1:5500/")
+@CrossOrigin({"http://127.0.0.1:5500", "http://localhost:5500"})
 @RequestMapping("/api/wallet")
 public class WalletController {
 
@@ -25,20 +25,15 @@ public class WalletController {
     private MemberService memberService;
 
     @GetMapping("")
-    public ResponseEntity<?> getWallet(@RequestHeader(value = "Authorization", required = false)String token,
-    		@RequestParam(value = "email", required = false) String email)  {
+    public ResponseEntity<?> getWallet(@RequestHeader(value = "Authorization", required = false)String token)  {
     	if (token == null || token.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized: No token provided.");
-        }
-    	// 이메일이 없으면 401 에러 반환
-        if (email == null || email.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing email parameter.");
         }
 
         // 토큰 유효성 검사
     	boolean isValid = false;
         try {
-            isValid = memberService.validateToken(token, email);
+            isValid = memberService.validateToken(token);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -49,7 +44,7 @@ public class WalletController {
         }
     	
     	try {
-			Wallet w = walletService.getWallet(email);
+			Wallet w = walletService.getWallet(token);
 			
 			Map<String, Object> response = new HashMap<>();
 			response.put("username", w.getUsername());
@@ -66,33 +61,24 @@ public class WalletController {
 		}
     }
     
-    @PostMapping("")
-    public ResponseEntity<?> updateWallet(@RequestHeader("Authorization") String token,
-            @RequestParam("email") String email,
-            @RequestBody WalletTransaction wt) {
-        if (token == null || token.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized: No token provided.");
-        }
 
-        // 토큰 유효성 검사
-        boolean isValid = false;
-        try {
-            isValid = memberService.validateToken(token, email);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        if (!isValid) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session expired. Please log in again.");
-        }
+    @PostMapping("") 
+    public ResponseEntity<?> updateWallet(@RequestHeader("Authorization") String authorization, @RequestBody WalletTransaction wt) {
+    	if (authorization.equals("")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    	
+    	Map<String, Object> response = new HashMap<>();
+    	
+    	try {
+			int balance = walletService.updateWallet(authorization, wt);
+			response.put("balance", balance);
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		} catch (IllegalAccessException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 
-        try {
-            walletService.updateWallet(wt);
-            return ResponseEntity.ok().body("Wallet updated successfully.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error.");
-        }
     }
 
    
