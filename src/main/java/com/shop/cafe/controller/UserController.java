@@ -41,28 +41,47 @@ public class UserController {
         return ResponseEntity.ok("User registered successfully!");
     }
 
-    // 로그인 (토큰 생성 및 반환)
+ // 로그인 (토큰 생성 및 반환)
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> loginUser(@RequestBody User user) {
         Map<String, String> response = new HashMap<>();
-        
-        try {
-            Login loginInfo = memberService.tokenLogin(user);  // tokenLogin 메서드 호출
 
-            if (loginInfo != null && loginInfo.getToken() != null) {
-                response.put("name", loginInfo.getName());  // 사용자 이름 반환
-                response.put("token", loginInfo.getToken());  // 생성된 토큰 반환
-                return ResponseEntity.ok(response);
+        try {
+            // 로그인 시 비밀번호 검증 및 사용자 정보 반환
+            User authenticatedUser = memberService.authenticateUser(user.getEmail(), user.getPassword());
+
+            if (authenticatedUser != null) {
+                // 로그인 후 토큰 생성
+                Login loginInfo = memberService.tokenLogin(authenticatedUser);
+
+                if (loginInfo != null && loginInfo.getToken() != null) {
+                    // 클라이언트에게 전달할 정보 (토큰과 사용자 이름 등)
+                    response.put("name", authenticatedUser.getName());
+                    response.put("token", loginInfo.getToken());
+
+                    // 로그인 후 받은 토큰이 유효한지 validateToken으로 확인
+                    boolean isValid = memberService.validateToken(loginInfo.getToken(), user.getEmail());
+                    if (!isValid) {
+                        response.put("msg", "Invalid token");
+                        return ResponseEntity.status(401).body(response);  // 유효하지 않은 토큰
+                    }
+
+                    return ResponseEntity.ok(response); // 유효한 토큰인 경우
+                } else {
+                    response.put("msg", "Token generation failed");
+                    return ResponseEntity.status(500).body(response);  // 토큰 생성 실패
+                }
             } else {
                 response.put("msg", "Invalid email or password");
-                return ResponseEntity.status(401).body(response);
+                return ResponseEntity.status(401).body(response);  // 로그인 실패
             }
         } catch (Exception e) {
             e.printStackTrace();
             response.put("msg", "Login error occurred");
-            return ResponseEntity.status(500).body(response);
+            return ResponseEntity.status(500).body(response);  // 오류 발생 시
         }
     }
+
 
 
  // 로그아웃 처리

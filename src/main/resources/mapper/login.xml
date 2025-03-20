@@ -8,6 +8,11 @@
     <insert id="insertToken" parameterType="Login">
         INSERT INTO login (email, token, createdAt) VALUES (#{email}, #{token}, NOW())
     </insert>
+    
+    <!-- 이메일로 토큰 조회 -->
+    <select id="getTokenByEmail" resultType="Login" parameterType="String">
+        SELECT email, token, UNIX_TIMESTAMP(createdAt) as createdAt FROM login WHERE email = #{email};
+    </select>
 
     <!-- 토큰을 삭제하는 SQL -->
     <delete id="deleteToken" parameterType="string">
@@ -17,4 +22,15 @@
     <select id="getEmailBy" parameterType="String" resultType="String">
         SELECT * FROM login WHERE token = #{token};
     </select>
+    
+    <delete id="deleteTokenByEmail">
+    DELETE FROM login WHERE email = #{email};
+</delete>
+
+
+
+
+    
+    
+    
 </mapper>
