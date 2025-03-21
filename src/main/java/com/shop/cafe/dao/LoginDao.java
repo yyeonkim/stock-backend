@@ -1,6 +1,8 @@
 package com.shop.cafe.dao;
 
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.shop.cafe.dto.Login;
 
@@ -16,4 +18,11 @@ public interface LoginDao {
     public void deleteToken(String token) throws Exception;
     
     public String getEmailBy(String token) throws Exception;
+
+	public void deleteTokenByEmail(@Param("email") String email) throws Exception;
+
+	public Login getTokenByEmail(String email);
+
+	
+	
 }

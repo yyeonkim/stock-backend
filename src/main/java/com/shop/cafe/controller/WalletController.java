@@ -2,6 +2,7 @@ package com.shop.cafe.controller;
 
 import com.shop.cafe.dto.Wallet;
 import com.shop.cafe.dto.WalletTransaction;
+import com.shop.cafe.service.MemberService;
 import com.shop.cafe.service.WalletService;
 
 import java.util.HashMap;
@@ -19,15 +20,33 @@ public class WalletController {
 
     @Autowired
     private WalletService walletService;
+    
+    @Autowired
+    private MemberService memberService;
 
     @GetMapping("")
-    public ResponseEntity<?> getWallet(@RequestHeader("Authorization") String authorization)  {
-    	if (authorization.equals("")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    	
-    	Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<?> getWallet(@RequestHeader(value = "Authorization", required = false)String token)  {
+    	if (token == null || token.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized: No token provided.");
+        }
+
+        // 토큰 유효성 검사
+    	boolean isValid = false;
+        try {
+            isValid = memberService.validateToken(token);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        
+        if (!isValid) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session expired. Please log in again.");
+        }
     	
     	try {
-			Wallet w = walletService.getWallet(authorization);
+			Wallet w = walletService.getWallet(token);
+			
+			Map<String, Object> response = new HashMap<>();
 			response.put("username", w.getUsername());
 			response.put("account", w.getAccount());
 			response.put("balance", w.getBalance());
@@ -42,6 +61,7 @@ public class WalletController {
 		}
     }
     
+
     @PostMapping("") 
     public ResponseEntity<?> updateWallet(@RequestHeader("Authorization") String authorization, @RequestBody WalletTransaction wt) {
     	if (authorization.equals("")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -58,6 +78,8 @@ public class WalletController {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
+
     }
+
    
 }

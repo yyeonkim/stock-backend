@@ -1,9 +1,10 @@
 package com.shop.cafe.dto;
 
 public class Login {
-	private String name, email, token,createdAt;
+	private String name, email, token;
+	private Long createdAt;
 
-	public Login(String name, String email, String token, String createdAt) {
+	public Login(String name, String email, String token, long createdAt) {
 		this.name = name;
 		this.email = email;
 		this.token = token;
@@ -36,11 +37,11 @@ public class Login {
 		this.token = token;
 	}
 
-	public String getCreatedAt() {
+	public long getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(String createdAt) {
+	public void setCreatedAt(long createdAt) {
 		this.createdAt = createdAt;
 	}
 

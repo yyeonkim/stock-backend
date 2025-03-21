@@ -40,29 +40,39 @@ public class UserController {
         memberService.registerUser(user);
         return ResponseEntity.ok("User registered successfully!");
     }
-
-    // 로그인 (토큰 생성 및 반환)
+    //로그인 처리
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> loginUser(@RequestBody User user) {
         Map<String, String> response = new HashMap<>();
-        
-        try {
-            Login loginInfo = memberService.tokenLogin(user);  // tokenLogin 메서드 호출
 
-            if (loginInfo != null && loginInfo.getToken() != null) {
-                response.put("name", loginInfo.getName());  // 사용자 이름 반환
-                response.put("token", loginInfo.getToken());  // 생성된 토큰 반환
-                return ResponseEntity.ok(response);
+        try {
+            //사용자의 이메일과 비밀번호를 검증
+            User authenticatedUser = memberService.authenticateUser(user.getEmail(), user.getPassword());
+
+            if (authenticatedUser != null) {
+                //비밀번호 검증 후 토큰 생성
+                Login loginInfo = memberService.tokenLogin(authenticatedUser);
+
+                if (loginInfo != null && loginInfo.getToken() != null) {
+                    // 사용자 정보 및 토큰 반환
+                    response.put("name", authenticatedUser.getName()); // 사용자 이름 반환
+                    response.put("token", loginInfo.getToken()); // 생성된 토큰 반환
+                    return ResponseEntity.ok(response);
+                } else {
+                    response.put("msg", "Token generation failed");
+                    return ResponseEntity.status(500).body(response);
+                }
             } else {
                 response.put("msg", "Invalid email or password");
                 return ResponseEntity.status(401).body(response);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.put("msg", "Login error occurred");
+            response.put("msg", "Login error occurred: " + e.getMessage());
             return ResponseEntity.status(500).body(response);
         }
     }
+
 
 
  // 로그아웃 처리
