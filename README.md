@@ -6,8 +6,9 @@
 
  https://youtu.be/JFfyY8l5ogk?si=129oT_Uj6anBolKC
 
- 
 
+
+ 
 ## 목차
 
 - [전체 구조](#전체-구조)
@@ -18,10 +19,13 @@
 
 
 
+
 ## 전체 구조
 ![Image](https://github.com/user-attachments/assets/6fdb36b4-0f68-460c-aa30-c00d4187d985)
 크게 두 가지의 백엔드로 이루어져있습니다. 
 첫 번쨰는 실시간 웹소켓을 통신하는 polygon web server, 두 번 째는 회원을 관리하고 입출금을 관리하는 자체 백엔드 서버입니다.
+
+
 
 
 ## 주요 기능
@@ -41,7 +45,7 @@ polygon api를 이용해 실시간으로 바뀌는 주식정보가 새로고침 
 인출할 금액이 예금 금액보다 많으면 잔액이 부족해 인출이 불가능합니다. 
 
 
-   
+
 
 ## 트러블 슈팅
 
@@ -53,6 +57,8 @@ promise.all을 사용해 동시에 요청한 후 응답을 한 번에 받습니�
 ![Image](https://github.com/user-attachments/assets/26e6cd12-8a61-4622-a9a5-2edd19d8d740)
 
 try-catch 를 이용해 하루 전 날짜의 주식정보를 불러옵니다.
+
+
 
 
 ## 기술 스택
@@ -71,7 +77,10 @@ try-catch 를 이용해 하루 전 날짜의 주식정보를 불러옵니다.
 
 ### Communication
 <img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"> <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white"> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/googlemeet-00897B?style=for-the-badge&logo=googlemeet&logoColor=white">
-  
+
+
+
+
 ## 팀원 소개
 
 1. 김용연 https://github.com/yyeonkim
