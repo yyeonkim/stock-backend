@@ -73,5 +73,35 @@ Polygon에 구현된 WebSocket으로 토큰을 보내 권한을 받고, 별도�
 
 ## 팀원 소개
 
-1. 김용연 https://github.com/yyeonkim
-2. 안정은 https://github.com/Ahn-jeongeun
+<table>
+  <tbody>
+    <tr>
+        <td align="center">
+        <a href="https://github.com/yyeonkim">
+            <img src="/img/coder-profile.png" width="100px;" alt=""/>
+            <br />
+            <sub><b>yyeonkim</b></sub>
+        </a>
+        <br />
+        </td>
+        <td align="center">
+        <a href="https://github.com/Ahn-jeongeun">
+            <img src="/img/profile.jpg" width="100px;" alt=""/>
+            <br />
+            <sub><b>Ahn-jeongeun</b></sub>
+        </a>
+        <br />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            웹소켓 통신 구현
+            <br />
+            입출금 구현
+        </td>
+        <td>
+            로그인/회원가입
+        </td>
+    </tr>
+  </tbody>
+</table>
