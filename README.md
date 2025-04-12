@@ -1,64 +1,56 @@
 # 실시간 주식 정보 조회 웹 서비스
-
-![Image](https://github.com/user-attachments/assets/a0fc6a0e-23ca-4796-91d1-d292dbffef02)
+![urecastock-bg](https://github.com/user-attachments/assets/fab9b9b6-4673-48c2-a7d1-ae30cd621e66)
 
 실시간 주식 정보 조회 및 입출금 기능을 개발하며 보얀 취약점을 제고하고 실시간 통신을 구현해봤습니다.
 
- https://youtu.be/JFfyY8l5ogk?si=129oT_Uj6anBolKC
-
-
+- 시연 영상: https://youtu.be/JFfyY8l5ogk?si=dhuO34P-ooW7wICu
 
  
 ## 목차
 
 - [전체 구조](#전체-구조)
-- [주요 기능](#주요-기능)
-- [트러블 슈팅](#트러블-슈팅)
+- [개발 과정](#개발-과정)
 - [기술 스택](#기술-스택)
 - [팀원 소개](#팀원-소개)
 
 
-
-
 ## 전체 구조
+1. WebSocket API를 사용하여 주식 정보를 실시간으로 받아오는 [Polygon.io](https://polygon.io/) 서버와
+2. 회원을 관리하고 입출금 기능을 제공하는 자체 서버로 구성되어 있습니다.
+- 참고: [Frontend Github Repository](https://github.com/yyeonkim/ureca-stock-frontend)
+
 ![Image](https://github.com/user-attachments/assets/6fdb36b4-0f68-460c-aa30-c00d4187d985)
-크게 두 가지의 백엔드로 이루어져있습니다. 
-첫 번쨰는 실시간 웹소켓을 통신하는 polygon web server, 두 번 째는 회원을 관리하고 입출금을 관리하는 자체 백엔드 서버입니다.
 
 
+## 개발 과정
 
+### 1️⃣ WebSocket 설정 및 실시간 주식 정보 가져오기
+Polygon에 구현된 WebSocket으로 토큰을 보내 권한을 받고, 별도의 요청(Request) 없이 실시간으로 주식 데이터를 받았습니다.
+- **배운 점**: 이 과정에서 WebSocket이 HTTP와 비교하여 실시간 통신에서 어떤 장점이 있는지 알게 되었습니다.
+- 참고: [Frontend Github Repository](https://github.com/yyeonkim/ureca-stock-frontend)
 
-## 주요 기능
-
-### 웹소켓을 통한 실시간 주식 정보 열람
 ![Image](https://github.com/user-attachments/assets/8b31fac3-1371-42b5-b213-40850bb553ac)
-polygon api를 이용해 실시간으로 바뀌는 주식정보가 새로고침 없이 사용자에게 보여집니다
-
-### 회원가입/로그인 서비스
-![Image](https://github.com/user-attachments/assets/4a480cf1-7c15-4a6c-a6a0-05e9ca2d4949)
-입출금 서비스를 이용하기 위해 간단한 회원가입/로그인 절차가 필요합니다.
-토큰 유효기간은 5분으로 5분이 지나면 세션이 만료되어 자동 로그아웃됩니다.
-
-### 입출금 서비스
-![Image](https://github.com/user-attachments/assets/c2e58785-e792-468b-9bf3-51bc037a5562)
-자신이 원하는 금액을 인출하고, 예금할 수 있습니다. 
-인출할 금액이 예금 금액보다 많으면 잔액이 부족해 인출이 불가능합니다. 
 
 
+### 2️⃣ 회원가입/로그인 서비스
+- **비밀번호 암호화**: 회원가입 시 Rainbow Table을 만들 위험이 있는 SHA 대신 **BCrypt 해싱 기술**을 사용하여 비밀번호를 암호화하였습니다.
+- **토큰 발급**: 토큰은 연산이 빠르고 복호화가 불가능한 SHA256 해싱 기술을 사용했습니다.
+
+<div align="center">
+ <img width="600px" src="https://github.com/user-attachments/assets/05bfeaa9-89d2-4940-97bc-a4646471ff87" />
+</div>
+
+#### 💀 무작위 대입 공격 문제
+무작위 대입 공격에 취약한 SHA의 단점을 보완하기 위해 아래와 같은 작업을 하였습니다.
+1. **토큰 유효기간**을 설정하여 설정한 시간이 지나면 토큰이 자동으로 만료되도록 했습니다.
+2. 로그인 할 때마다 **무작위로 salt를 설정**하여 이전 salt가 탈취되어도 공격을 방어할 수 있도록 했습니다.
+3. API 호출 횟수를 제한하는 Interceptor를 설정하여 Controller로 요청이 들어올 때 자동으로 요청 횟수를 카운트하고 설정한 횟수를 초과하면 429 에러를 반환하였습니다.
 
 
-## 트러블 슈팅
+### 3️⃣ 계좌 발급 및 입출금 서비스
+회원가입 시 계좌를 자동으로 발급하며, **안전한 입출금**을 위해 사용자의 1)토큰으로 가져온 이메일과 2)계좌 번호로 가져온 이메일을 한 번 더 대조하여 입출금을 수행했습니다.
 
-### 초가 아닌 분 단위 데이터 전송
-![Image](https://github.com/user-attachments/assets/e2ed7f4e-9780-448b-88ad-73b2ff9fe0f5)
-promise.all을 사용해 동시에 요청한 후 응답을 한 번에 받습니다.
-
-### 로컬 날짜에 따른 시차문제
-![Image](https://github.com/user-attachments/assets/26e6cd12-8a61-4622-a9a5-2edd19d8d740)
-
-try-catch 를 이용해 하루 전 날짜의 주식정보를 불러옵니다.
-
-
+![image](https://github.com/user-attachments/assets/09c649d9-c979-4224-9583-74ef7803d412)
 
 
 ## 기술 스택
@@ -77,8 +69,6 @@ try-catch 를 이용해 하루 전 날짜의 주식정보를 불러옵니다.
 
 ### Communication
 <img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"> <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white"> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/googlemeet-00897B?style=for-the-badge&logo=googlemeet&logoColor=white">
-
-
 
 
 ## 팀원 소개
