@@ -78,7 +78,7 @@ Polygon에 구현된 WebSocket으로 토큰을 보내 권한을 받고, 별도�
     <tr>
         <td align="center">
         <a href="https://github.com/yyeonkim">
-            <img src="/img/coder-profile.png" width="100px;" alt=""/>
+            <img src="/src/main/resources/static/imgs/coder-profile.png" width="100px;" alt=""/>
             <br />
             <sub><b>yyeonkim</b></sub>
         </a>
@@ -86,7 +86,7 @@ Polygon에 구현된 WebSocket으로 토큰을 보내 권한을 받고, 별도�
         </td>
         <td align="center">
         <a href="https://github.com/Ahn-jeongeun">
-            <img src="/img/profile.jpg" width="100px;" alt=""/>
+            <img src="/src/main/resources/static/imgs/profile.jpg" width="100px;" alt=""/>
             <br />
             <sub><b>Ahn-jeongeun</b></sub>
         </a>
