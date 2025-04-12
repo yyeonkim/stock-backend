@@ -30,7 +30,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		String clientIP = request.getRemoteAddr();
 		
-		requestCounts.putIfAbsent(clientIP, 0); // 초기화
+		requestCounts.putIfAbsent(clientIP, 0);
 		
 		int currCount = requestCounts.get(clientIP);
 		
